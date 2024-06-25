@@ -1,5 +1,7 @@
 import 'package:bookclub_dr/BookListPage1.dart';
 import 'package:bookclub_dr/CartPage.dart';
+import 'package:bookclub_dr/WishList.dart';
+import 'package:bookclub_dr/login2.dart';
 import 'package:bookclub_dr/model/Cart.dart';
 import 'package:flutter/material.dart';
 
@@ -27,10 +29,10 @@ class _BookHomeState extends State<BookHome> {
   final List<Widget> _pages = [
     BookHomeContent(), // Main content for home page
     BookListPage1(), // Book list page
-    //Center(child: Text("Settings Page")),
-    CartPage(
-      cartItems: [],
-    ), // Settings page
+    Center(child: Text("Settings Page")),
+    // CartPage(
+    //   cartItems: [],
+    // ), // Settings page
   ];
 
   @override
@@ -102,29 +104,86 @@ class _BookHomeState extends State<BookHome> {
               leading: Icon(Icons.book),
               title: Text('My Books'),
               onTap: () {
-                setState(() {
-                  _currentIndex = 1;
-                });
-                Navigator.pop(context);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => BookListPage(),
+                //   ),
+                // );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.favorite),
+              title: Text('Wishlist'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WishlistPage(
+                      wishlistItems: [],
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.shopping_cart),
+              title: Text('Cart'),
+              onTap: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => CartPage(),
+                //   ),
+                // );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Profile'),
+              onTap: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => ProfilePage(),
+                //   ),
+                // );
               },
             ),
             ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
               onTap: () {
-                setState(() {
-                  _currentIndex = 2;
-                });
-                Navigator.pop(context);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => SettingsPage(),
+                //   ),
+                // );
               },
             ),
             ListTile(
-              leading: Icon(Icons.settings),
+              leading: Icon(Icons.lightbulb),
+              title: Text('Suggestions'),
+              onTap: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => SuggestionsPage(),
+                //   ),
+                // );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
               title: Text('Logout'),
               onTap: () {
-                setState(() {
-                  _currentIndex = 3;
-                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginScreen2(),
+                  ),
+                );
                 Navigator.pop(context);
               },
             ),
@@ -153,8 +212,8 @@ class _BookHomeState extends State<BookHome> {
           //   label: 'Settings',
           // ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shop),
-            label: 'cart',
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
@@ -179,23 +238,44 @@ class BookHomeContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Color(0xFFe6e6e6),
-                prefixIcon: Icon(Icons.search),
-                hintText: "Search your favourite book.....",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(12.0),
+            //////////////////////////////////////////////seearch field
+            // TextField(
+            //   decoration: InputDecoration(
+            //     filled: true,
+            //     fillColor: Color(0xFFe6e6e6),
+            //     prefixIcon: Icon(Icons.search),
+            //     hintText: "Search your favourite book.....",
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.all(
+            //         Radius.circular(12.0),
+            //       ),
+            //       borderSide: BorderSide.none,
+            //     ),
+            //   ),
+            // ),
+            Text(
+              "Let's read something new Today?",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue, // Example vibrant color
+                shadows: [
+                  Shadow(
+                    blurRadius: 4,
+                    color: Colors.grey.withOpacity(0.5),
+                    offset: Offset(2, 2),
                   ),
-                  borderSide: BorderSide.none,
-                ),
+                ],
               ),
             ),
-            SizedBox(height: 20),
+
+            // SizedBox(height: 1),
+            Image(
+                image: AssetImage('collectionifbooks.jpg'),
+                width: 1000,
+                height: 400),
             Text("Suggestions", style: TextStyle(fontSize: 20)),
-            SizedBox(height: 20),
+            // SizedBox(height: 1),
             Container(
               height: 250.0, // Adjust the height as needed
               child: ListView.builder(

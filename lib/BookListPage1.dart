@@ -1,5 +1,6 @@
 import 'package:bookclub_dr/BookDetailsScreen.dart';
 import 'package:bookclub_dr/CartPage.dart';
+import 'package:bookclub_dr/WishList.dart';
 import 'package:bookclub_dr/model/book.dart';
 import 'package:flutter/material.dart';
 
@@ -19,32 +20,43 @@ class _BookListPage1State extends State<BookListPage1> {
       pages: 336,
       image: Image.asset('assets/Bird.jpg'), // Example image
     ),
+
+    Book(
+      name: 'Harry Potter',
+      author: 'J.K. Rowling',
+      rating: 4.0,
+      pages: 200,
+      image: Image.asset('harryPoter.jpg'), // Example image
+    ),
     Book(
       name: 'The Great Gatsby',
       author: 'F. Scott Fitzgerald',
       rating: 4.8,
+
       pages: 208,
       image: Image.asset('assets/Gatsby.jpg'), // Example image
     ),
     Book(
-      name: 'To Kill a Mockingbird',
+      name: 'Life In Woods',
+      author: 'Sarah John',
+      rating: 3.8,
+      pages: 373,
+      image: Image.asset('unnamed.jpg'), // Example image
+    ),
+    Book(
+      name: 'Great Expectation',
       author: 'Harper Lee',
       rating: 4.5,
       pages: 336,
-      image: Image.asset('assets/Bird.jpg'), // Example image
+      image: Image.asset('assets/Expectation.jpg'), // Example image
     ),
-    Book(
-      name: 'The Great Gatsby',
-      author: 'F. Scott Fitzgerald',
-      rating: 4.8,
-      pages: 208,
-      image: Image.asset('assets/Gatsby.jpg'), // Example image
-    ),
+
     // Add more books as needed
   ];
 
   List<Book> filteredBooks = [];
   List<Book> cartItems = [];
+  List<Book> wishlistItems = [];
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -57,7 +69,25 @@ class _BookListPage1State extends State<BookListPage1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Book List'),
+        title:
+            //////////////////////////////////////////////////////////////////////////title
+            // Text('Book List'),
+            Text(
+          "Find Best Book Today!!!",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue, // Example vibrant color
+            shadows: [
+              Shadow(
+                blurRadius: 4,
+                color: Colors.grey.withOpacity(0.5),
+                offset: Offset(2, 2),
+              ),
+            ],
+          ),
+        ),
+        ///////////////////////////////////////////////////////////////////////////
         actions: [
           IconButton(
             icon: Icon(Icons.shopping_cart),
@@ -66,6 +96,18 @@ class _BookListPage1State extends State<BookListPage1> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CartPage(cartItems: cartItems),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      WishlistPage(wishlistItems: wishlistItems),
                 ),
               );
             },
@@ -108,7 +150,8 @@ class _BookListPage1State extends State<BookListPage1> {
                     );
                   },
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    height: 150,
+                    margin: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -156,22 +199,82 @@ class _BookListPage1State extends State<BookListPage1> {
                                   Text(' ${filteredBooks[index].rating}'),
                                   SizedBox(width: 10),
                                   Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
+                                    Icons.book,
+                                    color: Color.fromARGB(255, 145, 142, 142),
                                   ),
                                   Text(' ${filteredBooks[index].pages} pages'),
                                 ],
                               ),
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////...
                             ],
                           ),
                         ),
+                        ////////////////////////////////////////////////add to cart
+                        Container(
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: filteredBooks[index].isInCart
+                                    ? Colors.blue.withOpacity(0.5)
+                                    : Colors.grey.withOpacity(0.5),
+                                spreadRadius: 1,
+                                blurRadius: 4,
+                                offset:
+                                    Offset(0, 2), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  addToCart(filteredBooks[index]);
+                                },
+                                icon: Icon(Icons.add_shopping_cart),
+                                tooltip: 'Add to Cart',
+                                color: filteredBooks[index].isInCart
+                                    ? Colors.blue
+                                    : Colors.grey,
+                              ),
+                              SizedBox(
+                                  width: 8), // Add space between icon and text
+                              Text(
+                                'Add to Cart',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: filteredBooks[index].isInCart
+                                      ? Colors.blue
+                                      : Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        //////////////////////////////////////////////// add to wishlist
                         IconButton(
                           onPressed: () {
-                            addToCart(filteredBooks[index]);
+                            toggleWishlist(filteredBooks[index]);
                           },
-                          icon: Icon(Icons.add_shopping_cart),
-                          tooltip: 'Add to Cart',
+                          icon: Icon(
+                            filteredBooks[index].isInWishlist
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: filteredBooks[index].isInWishlist
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
+                          tooltip: 'Add to Wishlist',
                         ),
+
+                        ///////////////////////////////////////
                       ],
                     ),
                   ),
@@ -200,8 +303,26 @@ class _BookListPage1State extends State<BookListPage1> {
 
   void addToCart(Book book) {
     setState(() {
-      cartItems.add(book);
+      if (!book.isInCart) {
+        cartItems.add(book);
+      } else {
+        cartItems.remove(book);
+      }
+      book.isInCart = !book.isInCart; // Toggle isInCart property
     });
     print('Added ${book.name} to cart!');
+  }
+
+  void toggleWishlist(Book book) {
+    setState(() {
+      book.isInWishlist = !book.isInWishlist;
+      if (book.isInWishlist) {
+        wishlistItems.add(book);
+        print('Added ${book.name} to wishlist!');
+      } else {
+        wishlistItems.remove(book);
+        print('Removed ${book.name} from wishlist!');
+      }
+    });
   }
 }

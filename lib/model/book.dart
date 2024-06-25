@@ -6,14 +6,16 @@ class Book {
   final double rating;
   final int pages;
   final Image image;
-
-  static var length; // New property for the book cover image
+  bool isInCart;
+  bool isInWishlist;
 
   Book({
     required this.name,
     required this.author,
     required this.rating,
     required this.pages,
-    required this.image, // Constructor parameter for the book cover image
+    required this.image,
+    this.isInCart = false,
+    this.isInWishlist = false,
   });
 }
